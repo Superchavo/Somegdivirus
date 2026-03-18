@@ -1,33 +1,22 @@
-name: Build GDI Project
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+name: Build VM Tool
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-      - name: Checkout Code
+      - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Setup MSVC (Developer Command Prompt)
+      - name: Configurar MSVC (Entorno de Visual Studio)
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Compile C++ Source
-        # We use cl.exe (Microsoft C++ Compiler)
-        # /EHsc: Enables C++ exceptions
-        # /MT: Statically links the Runtime Library (so it runs without extra DLLs)
-        # /link /SUBSYSTEM:WINDOWS: Ensures it runs as a background GUI app, not a console app
+      - name: Compilar con GDI+ y Multimedia
         run: |
-          cl.exe /EHsc /MT main.cpp /link /SUBSYSTEM:WINDOWS /OUT:GDI_Payload.exe
-
-      - name: Upload Executable
+          cl.exe /EHsc /O2 /D_CRT_SECURE_NO_WARNINGS main.cpp /link /OUT:chaos_tool.exe
+          
+      - name: Guardar el ejecutable
         uses: actions/upload-artifact@v4
         with:
-          name: GDI_Binary
-          path: GDI_Payload.exe
-
-    
+          name: program-exe
+          path: virus.exe
